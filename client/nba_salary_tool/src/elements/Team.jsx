@@ -1,8 +1,8 @@
 import { Link, useParams } from "react-router-dom";
 import teamsData from "../data/teams.json";
 import nbaSalaries from "../data/nba_salaries.json";
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
+
 
 const Team = () => {
   const { teamId } = useParams();
@@ -16,7 +16,7 @@ const Team = () => {
     }
   });
 
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const years = ['2024-25', '2025-26', '2026-27', '2027-28', '2028-29', '2029-30'];
   const [selectedYear, setSelectedYear] = useState('2024-25'); // Default selected year
   const firstApronThreshold = [178132000,195945000,	215539500,	237093450,	260802795,	286883075]; 
