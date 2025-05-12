@@ -1,2 +1,4 @@
 /node_modules
 /server/credentials.json
+README.md
+/.env

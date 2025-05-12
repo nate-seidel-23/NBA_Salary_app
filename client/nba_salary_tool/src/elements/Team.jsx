@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import teamsData from "../data/teams.json";
+import nbaSalaries from "../data/nba_salaries.json";
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -20,7 +21,7 @@ const Team = () => {
   const [selectedYear, setSelectedYear] = useState('2024-25'); // Default selected year
   const firstApronThreshold = [178132000,195945000,	215539500,	237093450,	260802795,	286883075]; 
   const secondApronThreshold = [188931000, 207824000, 228606400,	251467040,	276613744,	304275118];
-
+/** Would use below code for mySQL integration 
   useEffect(() => {
     axios
       .get(`/get_playerTeam/${teamId}`)
@@ -28,14 +29,21 @@ const Team = () => {
         setData(res.data);
       })
       .catch((err) => console.log(err));
-  }, [teamId]);
+  }, [teamId]); */
+  // For now, using the static JSON data
+  // Extract player data for the selected team from the JSON file
+ const playerData = nbaSalaries
+  .find((table) => table.type === "table" && table.name === "nba_salaries")
+  ?.data.filter((player) => player.Team === teamId.toUpperCase()) || []; // Default to an empty array if no data is found
 
+if (playerData.length === 0) {
+  return <p>No players found for this team</p>;
+}
   const calculateYearlyTotals = () => {
     const totals = {};
-    years.forEach(year => {
-      totals[year] = data.reduce((sum, player) => {
-        player[year] = player[year].replace('$', '');
-        const value = parseFloat(player[year]) || 0;
+    years.forEach((year) => {
+      totals[year] = playerData.reduce((sum, player) => {
+        const value = parseFloat(player[year]?.replace(/[$,]/g, "") || 0);
         return sum + value;
       }, 0);
     });
@@ -43,7 +51,7 @@ const Team = () => {
   };
 
   const calculateGuaranteedTotal = () => {
-    const total = data.reduce((sum, player) => {
+    const total = playerData.reduce((sum, player) => {
       const guaranteed = player['Guaranteed'].replace('$', '');
       const value = parseFloat(guaranteed) || 0;
       return sum + value;
@@ -115,7 +123,7 @@ const Team = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((player) => (
+            {playerData.map((player) => (
               <tr key={player.Name}>
                 <td className="player-cell">
                   <img src={`https://www.basketball-reference.com/req/202106291/images/headshots/${player.player_id}.jpg`} alt={player.Name} className="player-image-small" />
@@ -124,7 +132,7 @@ const Team = () => {
                 {years.map(year => (
                   <td key={year}>
                     {player[year] 
-                      ? '$' + player[year].replace(/\B(?=(\d{3})+(?!\d))/g, ',') 
+                      ? '$' + player[year].replace(/[$,]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',') 
                       : '-'}
                   </td>
                 ))}
@@ -145,6 +153,10 @@ const Team = () => {
           </tbody>
         </table>
       </div>
+      <footer className="footer">
+        <p>*Includes dead cap</p>
+        <p>Salary data provided by <a href="https://www.basketball-reference.com/contracts/players.html">Basketball Reference</a></p>
+      </footer>
     </div>
   );
 };

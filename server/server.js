@@ -1,22 +1,22 @@
-const express = require('express');
-const mysql = require('mysql');
-const cors = require('cors');
-const path = require('path');
+// const express = require('express');
+// const mysql = require('mysql');
+// const cors = require('cors');
+// const path = require('path');
 
-const app = express();
+// const app = express();
 
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
-app.use(express.json());
+// app.use(express.static(path.join(__dirname, 'public')));
+// app.use(cors());
+// app.use(express.json());
 
-const port = 5000;
+// const port = 5000;
 
-const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "players"
-});
+// const db = mysql.createConnection({
+//     host: "localhost",
+//     user: "root",
+//     password: "",
+//     database: "players"
+// });
 
 // app.post('/add_user', (req, res) =>{
 //     const sql = "INSERT INTO player_details (name, id, age, team) VALUES (?,?,?,?)";  
@@ -60,51 +60,51 @@ const db = mysql.createConnection({
 //     });
 // })
 
-app.get("/players", (req, res) => {
-    const sql = "SELECT * FROM player_details";
-    db.query(sql, (err, result) => {
-        if(err) return res.json({message: 'Server Error'});
-        return res.json(result);
-    });
-});
+// app.get("/players", (req, res) => {
+//     const sql = "SELECT * FROM player_details";
+//     db.query(sql, (err, result) => {
+//         if(err) return res.json({message: 'Server Error'});
+//         return res.json(result);
+//     });
+// });
 
-app.get("/get_player/:id", (req, res) => {
-    const id = req.params.id;
-    const sql = "SELECT * FROM player_details WHERE `id`= ?";
-    db.query(sql, [id], (err, result) => {
-      if (err) res.json({ message: "Server error" });
-      return res.json(result);
-    });
-  });
+// app.get("/get_player/:id", (req, res) => {
+//     const id = req.params.id;
+//     const sql = "SELECT * FROM player_details WHERE `id`= ?";
+//     db.query(sql, [id], (err, result) => {
+//       if (err) res.json({ message: "Server error" });
+//       return res.json(result);
+//     });
+//   });
 
-  app.get("/get_playerTeam/:team", (req, res) => {
-    const team = req.params.team;
-    const sql = "SELECT * FROM nba_salaries WHERE `team`= ?";
-    db.query(sql, [team], (err, result) => {
-      if (err) res.json({ message: "Server error" });
-      return res.json(result);
-    });
-  });
+//   app.get("/get_playerTeam/:team", (req, res) => {
+//     const team = req.params.team;
+//     const sql = "SELECT * FROM nba_salaries WHERE `team`= ?";
+//     db.query(sql, [team], (err, result) => {
+//       if (err) res.json({ message: "Server error" });
+//       return res.json(result);
+//     });
+//   });
 
-  // New endpoint to get player salaries
-app.post("/get_playerSalaries", (req, res) => {
-    const playerIds = req.body.playerIds;
-    const sql = "SELECT * FROM player_salaries WHERE `player_id` IN (?)";
-    db.query(sql, [playerIds], (err, result) => {
-        if (err) return res.json({ message: "Server error" });
-        const salaries = result.reduce((acc, salary) => {
-            if (!acc[salary.player_id]) {
-                acc[salary.player_id] = [];
-            }
-            acc[salary.player_id].push(salary);
-            return acc;
-        }, {});
-        return res.json(salaries);
-    });
-});
+//   // New endpoint to get player salaries
+// app.post("/get_playerSalaries", (req, res) => {
+//     const playerIds = req.body.playerIds;
+//     const sql = "SELECT * FROM player_salaries WHERE `player_id` IN (?)";
+//     db.query(sql, [playerIds], (err, result) => {
+//         if (err) return res.json({ message: "Server error" });
+//         const salaries = result.reduce((acc, salary) => {
+//             if (!acc[salary.player_id]) {
+//                 acc[salary.player_id] = [];
+//             }
+//             acc[salary.player_id].push(salary);
+//             return acc;
+//         }, {});
+//         return res.json(salaries);
+//     });
+// });
 
 
 
-app.listen(port, () => {
-    console.log('listening');
-});
+// app.listen(port, () => {
+//     console.log('listening');
+// });
